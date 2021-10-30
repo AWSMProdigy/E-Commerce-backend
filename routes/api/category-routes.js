@@ -50,12 +50,12 @@ catch (err) {
 router.post('/', async (req, res) => {
   // create a new category
   try{
-  const newCat = await Category.create({
+    const newCat = await Category.create({
     category_name: req.body.category_name
   })
-  res.status(200).json(newCat);
-  return;
-} catch(err){
+    res.status(200).json(newCat);
+    return;
+  } catch(err){
     res.status(500).json(err);
     return;
 }
@@ -90,7 +90,7 @@ router.delete('/:id', async (req, res) => {
         id: req.params.id
       }
     })
-    if(updatedCat){
+    if(deletedCat){
       res.status(200).json(deletedCat);
       return;
     }else{
