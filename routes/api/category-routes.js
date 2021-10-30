@@ -50,7 +50,7 @@ catch (err) {
 router.post('/', (req, res) => {
   // create a new category
   try{
-  const newCat = Category.create({
+  const newCat = await Category.create({
     category_name: req.body.category_name
   })
   res.status(200).json(newCat);
@@ -64,7 +64,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   // update a category by its `id` value
   try{
-    const updatedCat = Category.update(req.body, {
+    const updatedCat = await Category.update(req.body, {
       where: {
         id: req.params.id
       }
@@ -85,13 +85,13 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   // delete a category by its `id` value
   try{
-    const updatedCat = Category.destroy({
+    const deletedCat = await Category.destroy({
       where: {
         id: req.params.id
       }
     })
     if(updatedCat){
-      res.status(200).json(updatedCat);
+      res.status(200).json(deletedCat);
       return;
     }else{
       res.status(404).json({message:"Category does not exist to be deleted"});

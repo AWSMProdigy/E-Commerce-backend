@@ -8,13 +8,18 @@ router.get('/', (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
   try{
-    const cats = await Product.findAll({
-      include: {
-        model: Product,
-        attributes: ['id', 'product_name', 'price', 'stock', 'category_id']
+    const prods = await Product.findAll({
+      include: [
+      {
+        model: Category,
+        attributes: ['category_name']
+      },
+      {
+      model: Tag,
+      attributes: ['tag_name']
       }
-    })
-    res.status(200).json(cats);
+      ]})
+    res.status(200).json(prods);
     return;
   } catch (err) {
     res.status(500).json(err);
@@ -26,6 +31,33 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
+  try{
+    const prod = await Product.findOne({
+      where: {
+        id: req.params.id
+      },
+      include: [
+      {
+        model: Category,
+        attributes: ['category_name']
+      },
+      {
+      model: Tag,
+      attributes: ['tag_name']
+      }
+      ]})
+      if(prod){
+        res.status(200).json(prod);
+        return;
+      }else{
+        res.status(404).json({message: "No such product found"});
+        return;
+      }
+    }
+    catch (err) {
+      res.status(500).json(err);
+      return;
+    }
 });
 
 // create new product
@@ -104,6 +136,23 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
+  try{
+    const deletedProd = await Product.destroy({
+      where: {
+        id: req.params.id
+      }
+    })
+    if(deletedProd){
+      res.status(200).json(deletedProd);
+      return;
+    }else{
+      res.status(404).json({message:"Product does not exist to be deleted"});
+      return;
+    }
+  } catch(err){
+    res.status(500).json(err);
+    return;
+  }
 });
 
 module.exports = router;
